@@ -746,23 +746,41 @@ export function AdminDashboard({
                 </Magnetic>
               </div>
             </div>
-            <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-13 gap-2">
-              {questions.map((q) => (
+            {questions.length === 0 ? (
+              <div className="p-8 rounded-2xl inset-dark border border-[#d9b45b]/30 bg-[#d9b45b]/5 text-center my-3">
+                <div className="font-display text-lg font-bold text-white mb-2">
+                  No questions currently loaded
+                </div>
+                <p className="text-xs text-[#8b95ad] mb-4">
+                  Click below to restore all 25 official Six Sigma Green Belt mock exam questions and answer keys.
+                </p>
                 <button
-                  key={q.id}
                   type="button"
-                  onClick={() => setEditingQuestion(q)}
-                  className="p-2 rounded-xl inset-dark hover:border-[#d9b45b]/45 text-center transition-all cursor-pointer group"
+                  onClick={handleRestoreDefaultQuestions}
+                  className="px-5 py-2.5 rounded-full bg-gradient-to-r from-[#f3dca4] via-[#d9b45b] to-[#a8822f] text-[#0a0f1e] font-bold text-xs inline-flex items-center gap-2 shadow-lg cursor-pointer"
                 >
-                  <div className="text-[10px] text-[#5d6881]">
-                    Q{q.questionNumber}
-                  </div>
-                  <div className="font-display text-base font-bold foil-text group-hover:scale-110 transition-transform">
-                    {q.correctOption}
-                  </div>
+                  <RotateCcw className="w-3.5 h-3.5" /> Restore 25 Questions
                 </button>
-              ))}
-            </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-13 gap-2">
+                {questions.map((q) => (
+                  <button
+                    key={q.id}
+                    type="button"
+                    onClick={() => setEditingQuestion(q)}
+                    className="p-2 rounded-xl inset-dark hover:border-[#d9b45b]/45 text-center transition-all cursor-pointer group"
+                  >
+                    <div className="text-[10px] text-[#5d6881]">
+                      Q{q.questionNumber}
+                    </div>
+                    <div className="font-display text-base font-bold foil-text group-hover:scale-110 transition-transform">
+                      {q.correctOption}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-4">

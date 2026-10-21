@@ -70,7 +70,26 @@ export default function AssessmentPlatform() {
         fetch("/api/questions"),
         fetch("/api/assignments"),
       ]);
-      if (qRes.ok) setQuestions((await qRes.json()).questions || []);
+      if (qRes.ok) {
+        const qData = await qRes.json();
+        let loadedQuestions: Question[] = qData.questions || [];
+        if (loadedQuestions.length === 0) {
+          try {
+            const restoreRes = await fetch("/api/questions", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ action: "reset_defaults" }),
+            });
+            if (restoreRes.ok) {
+              const restored = await restoreRes.json();
+              loadedQuestions = restored.questions || [];
+            }
+          } catch {
+            // ignore
+          }
+        }
+        setQuestions(loadedQuestions);
+      }
       if (aRes.ok) {
         const aData = await aRes.json();
         setAssignments(aData.assignments || []);
