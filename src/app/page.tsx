@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Question, CandidateAssignment, ExamAttempt } from "@/db/schema";
 import { MleapsLogo } from "@/components/MleapsLogo";
-import { BellCurvePanel, CheckMark, CrossMark } from "@/components/SixSigmaVisuals";
+import { BellCurvePanel } from "@/components/SixSigmaVisuals";
 import { LiveExamArena } from "@/components/LiveExamArena";
 import { ScorecardView } from "@/components/ScorecardView";
 import { AdminDashboard } from "@/components/AdminDashboard";
@@ -21,6 +21,7 @@ import {
   Award,
   Clock,
   CircleCheck,
+  CircleX,
   Hourglass,
 } from "lucide-react";
 
@@ -557,9 +558,9 @@ export default function AssessmentPlatform() {
                         <div className="flex items-start gap-3">
                           <div className="shrink-0 mt-0.5">
                             {verificationResult.allowed ? (
-                              <CheckMark className="w-6 h-6" />
+                              <CircleCheck className="w-6 h-6 text-emerald-600" />
                             ) : (
-                              <CrossMark className="w-6 h-6" />
+                              <CircleX className="w-6 h-6 text-rose-600" />
                             )}
                           </div>
                           <div className="flex-1 space-y-2">

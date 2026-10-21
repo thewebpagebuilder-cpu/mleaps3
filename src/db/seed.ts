@@ -1,7 +1,7 @@
 import { db } from "./index";
-import { questions, candidateAssignments, examAttempts } from "./schema";
+import { questions, candidateAssignments, examAttempts, Question, CandidateAssignment } from "./schema";
 import { INITIAL_SIX_SIGMA_QUESTIONS } from "./seed-data";
-import { count, asc } from "drizzle-orm";
+import { count, asc, eq } from "drizzle-orm";
 
 let isSeeding = false;
 
@@ -21,11 +21,12 @@ export async function ensureSeeded() {
       .select({ value: count() })
       .from(candidateAssignments);
 
+    const now = new Date();
+    const hourMs = 3600 * 1000;
+    const dayMs = 24 * hourMs;
+
     if (assignmentCount === 0) {
       isSeeding = true;
-      const now = new Date();
-      const hourMs = 3600 * 1000;
-      const dayMs = 24 * hourMs;
 
       const allQuestions = await db
         .select()
@@ -120,7 +121,7 @@ export async function ensureSeeded() {
         const claireAnswers: Record<string, string> = {};
         const devonAnswers: Record<string, string> = {};
 
-        allQuestions.forEach((q, idx) => {
+        allQuestions.forEach((q: Question, idx: number) => {
           const wrongOption =
             q.correctOption === "A"
               ? "B"
@@ -144,13 +145,13 @@ export async function ensureSeeded() {
         });
 
         const siddharthAssignment = insertedAssignments.find(
-          (a) => a.candidateEmail === "siddharth.mehta@mleaps.com"
+          (a: CandidateAssignment) => a.candidateEmail === "siddharth.mehta@mleaps.com"
         );
         const claireAssignment = insertedAssignments.find(
-          (a) => a.candidateEmail === "claire.dupont@mleaps.com"
+          (a: CandidateAssignment) => a.candidateEmail === "claire.dupont@mleaps.com"
         );
         const devonAssignment = insertedAssignments.find(
-          (a) => a.candidateEmail === "devon.brooks@mleaps.com"
+          (a: CandidateAssignment) => a.candidateEmail === "devon.brooks@mleaps.com"
         );
 
         await db.insert(examAttempts).values([
