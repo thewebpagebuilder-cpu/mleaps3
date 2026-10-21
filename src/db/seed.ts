@@ -36,13 +36,22 @@ export async function ensureSeeded() {
         .insert(candidateAssignments)
         .values([
           {
-            candidateName: "Alex Rivera",
-            candidateEmail: "alex.rivera@mleaps.com",
-            validFrom: new Date(now.getTime() - 2 * hourMs),
-            validUntil: new Date(now.getTime() + 7 * dayMs),
+            candidateName: "Demo Candidate (Fake Profile)",
+            candidateEmail: "fake.candidate@mleaps.com",
+            validFrom: new Date(now.getTime() - 10 * 60 * 1000),
+            validUntil: new Date(now.getTime() + 48 * hourMs),
             durationMinutes: 40,
             status: "assigned",
-            notes: "Six Sigma Green Belt Wave 1 — Active Authorized Window",
+            notes: "Fake candidate profile active for 48 hours to take the Six Sigma Green Belt mock test.",
+          },
+          {
+            candidateName: "Alex Rivera",
+            candidateEmail: "alex.rivera@mleaps.com",
+            validFrom: new Date(now.getTime() - 10 * 60 * 1000),
+            validUntil: new Date(now.getTime() + 48 * hourMs),
+            durationMinutes: 40,
+            status: "assigned",
+            notes: "Six Sigma Green Belt Wave 1 — Active 48-Hour Assessment Window",
           },
           {
             candidateName: "Priya Nair",
@@ -186,6 +195,32 @@ export async function ensureSeeded() {
           },
         ]);
       }
+    }
+
+    // Ensure the fake candidate profile active for 48 hours is always present and refreshed
+    const existingFake = await db
+      .select()
+      .from(candidateAssignments)
+      .where(eq(candidateAssignments.candidateEmail, "fake.candidate@mleaps.com"));
+
+    if (existingFake.length === 0) {
+      await db.insert(candidateAssignments).values({
+        candidateName: "Demo Candidate (Fake Profile)",
+        candidateEmail: "fake.candidate@mleaps.com",
+        validFrom: new Date(now.getTime() - 10 * 60 * 1000),
+        validUntil: new Date(now.getTime() + 48 * hourMs),
+        durationMinutes: 40,
+        status: "assigned",
+        notes: "Fake candidate profile active for 48 hours to take the Six Sigma Green Belt mock test.",
+      });
+    } else if (existingFake[0].status === "assigned") {
+      await db
+        .update(candidateAssignments)
+        .set({
+          validFrom: new Date(now.getTime() - 10 * 60 * 1000),
+          validUntil: new Date(now.getTime() + 48 * hourMs),
+        })
+        .where(eq(candidateAssignments.candidateEmail, "fake.candidate@mleaps.com"));
     }
   } catch (err) {
     console.error("Seed check error:", err);
